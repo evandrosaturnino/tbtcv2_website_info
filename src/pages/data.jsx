@@ -432,11 +432,32 @@ export const formatUserDetail = (user) => ({
 });
 
 export const getDeposits = async (network, isSearch, searchInput) => {
-  const emptyData = JSON.parse(`[]`);
+  let data = {
+    data: {
+      deposits: [],
+      statsRecord: {},
+      tbtctoken: {},
+    },
+  };
+
   try {
-    let data;
     if (!isSearch) {
-      data = await client.execute(client.GetAllDepositsQueryDocument, {});
+      let skip = 0;
+      const promises = [];
+      const queriedStats = await client.execute(client.GetStatsRecordAndTbtcTokenQueryDocument, {});
+      data.data.statsRecord = queriedStats.data.statsRecord;
+      data.data.tbtctoken = queriedStats.data.tbtctoken;
+      const maxIterator = Math.ceil(data.data.statsRecord.numDeposits / Const.MAXIMUM_BATCH_SIZE);  
+
+      for (let i = 0; i < maxIterator; i++) {
+        const queriedPromiseData = client.execute(client.GetAllDepositsQueryDocument, {
+          skip: skip
+        });
+        promises.push(queriedPromiseData);
+        skip += Const.MAXIMUM_BATCH_SIZE;
+      }
+      const queriedData = await Promise.all(promises);
+      data.data.deposits = queriedData.map((item) => item.data.deposits).flat();
     } else {
       const fundingTxHashHex = convertToLittleEndian(searchInput.toLowerCase());
       data = await client.execute(client.GetDepositsQueryByUserDocument, {
@@ -445,21 +466,40 @@ export const getDeposits = async (network, isSearch, searchInput) => {
         fundingTxHash: fundingTxHashHex,
       });
     }
-    if (data.data !== undefined) {
-      return data.data;
-    }
   } catch (e) {
-    console.log("error to fetch deposit data " + e);
+    console.log("Error fetching deposit data: ", e);
   }
-  return emptyData;
+  return data.data;
 };
 
 export const getRedeems = async (network, isSearch, searchInput) => {
-  const emptyData = JSON.parse(`[]`);
+  let data = {
+    data: {
+      redemptions: [],
+      statsRecord: {},
+      tbtctoken: {},
+    },
+  };
+
   try {
-    let data = emptyData;
     if (!isSearch) {
-      data = await client.execute(client.GetAllRedemptionsQueryDocument, {});
+      let skip = 0;
+      const promises = [];
+      const queriedStats = await client.execute(client.GetStatsRecordAndTbtcTokenQueryDocument, {});
+      data.data.statsRecord = queriedStats.data.statsRecord;
+      data.data.tbtctoken = queriedStats.data.tbtctoken;
+      const maxIterator = Math.ceil(data.data.statsRecord.numRedemptions / Const.MAXIMUM_BATCH_SIZE);  
+
+      for (let i = 0; i < maxIterator; i++) {
+        const queriedPromiseData = client.execute(client.GetAllRedemptionsQueryDocument, {
+          skip: skip
+        });
+        promises.push(queriedPromiseData);
+        skip += Const.MAXIMUM_BATCH_SIZE;
+      }
+      
+      const queriedData = await Promise.all(promises);
+      data.data.redemptions = queriedData.map((item) => item.data.redemptions).flat();
     } else {
       const completedTxHashHex = convertToLittleEndian(
         searchInput.toLowerCase()
@@ -477,13 +517,10 @@ export const getRedeems = async (network, isSearch, searchInput) => {
         });
       }
     }
-    if (data.data !== undefined) {
-      return data.data;
-    }
   } catch (e) {
-    console.log("error to fetch redeem data " + e);
+    console.log("error fetching redemption data " + e);
   }
-  return emptyData;
+  return data.data;
 };
 
 export const getTokenInfo = async (network) => {

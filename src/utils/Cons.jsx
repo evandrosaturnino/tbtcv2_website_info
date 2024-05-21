@@ -12,6 +12,7 @@ export const SATOSHI_BITCOIN = 100000000;
 export const NETWORK_MAINNET = "mainnet";
 export const NETWORK_TESTNET = "testnet";
 export const DEFAULT_NETWORK = NETWORK_TESTNET;
+export const MAXIMUM_BATCH_SIZE = 1000;
 
 export const TIME_LOCK_DEAUTHORIZATION = 45 * 24 * 60 * 60;//45 days
 

@@ -42,8 +42,8 @@ query GetDepositsQueryByUser($user: String, $id: Bytes,$fundingTxHash: Bytes){
     }
 }
 
-query GetAllDepositsQuery{
-    deposits(first: 1000,orderBy: updateTimestamp,orderDirection: desc) {
+query GetAllDepositsQuery($skip: Int){
+    deposits(first: 1000, skip: $skip, orderBy: updateTimestamp, orderDirection: desc) {
         id
         status
         user{
@@ -70,8 +70,13 @@ query GetAllDepositsQuery{
             description
         }
     }
+}
+
+query GetStatsRecordAndTbtcTokenQuery{
     statsRecord(id:"current"){
         mintingStatus
+        numDeposits
+        numRedemptions
     }
     tbtctoken(id:"TBTCToken"){
         totalMint
@@ -150,8 +155,8 @@ query GetRedemptionQueryByUser($user: String, $id: ID,$completedTxHash: Bytes){
     }
 }
 
-query GetAllRedemptionsQuery{
-    redemptions (first: 1000,orderBy: updateTimestamp,orderDirection: desc) {
+query GetAllRedemptionsQuery($skip: Int) {
+    redemptions (first: 1000, skip: $skip, orderBy: updateTimestamp, orderDirection: desc) {
         id,
         status,
         user{
@@ -173,11 +178,6 @@ query GetAllRedemptionsQuery{
             to
             description
         }
-    }
-    tbtctoken(id:"TBTCToken"){
-        totalMint
-        totalBurn
-        totalSupply
     }
 }
 
