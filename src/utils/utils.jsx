@@ -1,7 +1,7 @@
 import * as Const from "./Cons";
 
 const getEtherScanLink = () => {
-    return Const.DEFAULT_NETWORK === Const.NETWORK_MAINNET ? "https://etherscan.io" : "https://goerli.etherscan.io"
+return Const.DEFAULT_NETWORK === Const.NETWORK_MAINNET ? "https://etherscan.io" : "https://sepolia.etherscan.io"
 }
 
 export const getEtherAddressLink = () => {

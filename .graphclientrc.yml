@@ -1,8 +1,8 @@
 sources:
-  - name: tbtc-mainnet
+  - name: threshold-tbtc-sepolia
     handler:
       graphql:
-        endpoint: https://gateway-arbitrum.network.thegraph.com/api/f49026e5653284c96b9798f93567eaa1/subgraphs/id/DETCX5Xm6tJfctRcZAxhQB9q3aK8P4BXLbujHmzEBXYV
+        endpoint: https://api.studio.thegraph.com/query/59264/threshold-tbtc-sepolia/version/latest
     transforms:
       - autoPagination:
           limitOfRecords: 2000

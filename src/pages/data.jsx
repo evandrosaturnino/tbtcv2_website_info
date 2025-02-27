@@ -632,7 +632,7 @@ export const getCurrentBlockNumber = async () => {
     const response = await fetch(
       Const.DEFAULT_NETWORK === Const.NETWORK_MAINNET
         ? Const.RPC_ETH_MAINNET
-        : Const.RPC_ETH_GOERLI,
+        : Const.RPC_ETH_SEPOLIA,
       {
         method: "POST",
         headers: {
