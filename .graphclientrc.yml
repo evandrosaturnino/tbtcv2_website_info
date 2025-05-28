@@ -2,7 +2,7 @@ sources:
   - name: tbtc-mainnet
     handler:
       graphql:
-        endpoint: https://gateway.thegraph.com/api/subgraphs/id/DETCX5Xm6tJfctRcZAxhQB9q3aK8P4BXLbujHmzEBXYV
+        endpoint: https://gateway.thegraph.com/api/f49026e5653284c96b9798f93567eaa1/subgraphs/id/DETCX5Xm6tJfctRcZAxhQB9q3aK8P4BXLbujHmzEBXYV
     transforms:
       - autoPagination:
           limitOfRecords: 2000
